@@ -67,9 +67,6 @@ func fetchInfoImagenes() ([]map[string]string, error) {
 
 	defer client.Close()
 
-	// Otra forma de configurar el cliente de Google Cloud Storage con las credenciales
-	os.ReadFile(pathToCredentials)
-
 	bucketName := os.Getenv("GCLOUD_BUCKET_NAME")
 	carpetaDestino := os.Getenv("CARPETA_DESTINO")
 

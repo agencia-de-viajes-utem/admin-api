@@ -7,7 +7,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: prueba.lumonidy.studio
+  - host: lumonidy.studio
     http:
       paths:
       - backend:
@@ -16,4 +16,14 @@ spec:
             port:
               number: 80
         pathType: Prefix
-        path: /
+        path: /api/admin
+  - host: www.lumonidy.studio
+    http:
+      paths:
+      - backend:
+          service:
+            name: golang-service
+            port:
+              number: 80
+        pathType: Prefix
+        path: /api/admin
