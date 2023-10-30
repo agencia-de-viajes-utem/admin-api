@@ -11,6 +11,7 @@ import (
 type PaisCreate struct {
 	Nombre      string `json:"nombre"`
 	Abreviacion string `json:"abreviacion"`
+	Imagenes    string `json:"imagenes"`
 	// Otras propiedades de país, si las hubiera
 }
 
@@ -25,7 +26,7 @@ func CreatePais(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Crear el nuevo país en la base de datos
-	err = createPais(paisCreate.Nombre, paisCreate.Abreviacion)
+	err = createPais(paisCreate.Nombre, paisCreate.Abreviacion, paisCreate.Imagenes)
 	if err != nil {
 		handleError(w, "Error al crear el país", http.StatusInternalServerError, err)
 		return
@@ -45,7 +46,7 @@ func CreatePais(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func createPais(nombre string, abreviacion string) error {
+func createPais(nombre string, abreviacion string, imagenes string) error {
 	// Realizar la verificación en la base de datos
 	db, err := utils.OpenDB()
 	if err != nil {
@@ -67,9 +68,9 @@ func createPais(nombre string, abreviacion string) error {
 
 	// Realizar la inserción en la base de datos
 	_, err = db.Exec(`
-        INSERT INTO pais (nombre, abreviacion)
-        VALUES ($1, $2)
-    `, nombre, abreviacion)
+        INSERT INTO pais (nombre, abreviacion, imagenes)
+        VALUES ($1, $2, $3)
+    `, nombre, abreviacion, imagenes)
 
 	return err
 }

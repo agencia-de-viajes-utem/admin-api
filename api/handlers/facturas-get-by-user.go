@@ -16,36 +16,36 @@ func GetFacturasByUsuarios(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Obtener todas las reservas
-	reservas, err := fetchFacturas()
+	// Obtener todas las facturas
+	facturas, err := fetchFacturas()
 	if err != nil {
-		handleError(w, "Error al obtener las reservas", http.StatusInternalServerError, err)
+		handleError(w, "Error al obtener las facturas", http.StatusInternalServerError, err)
 		return
 	}
 
-	// Filtrar las reservas por el ID de usuario
-	reservasFiltradas := filterFacturasByUsuarios(reservas, idUsuario)
+	// Filtrar las facturas por el ID de usuario
+	facturasFiltradas := filterFacturasByUsuarios(facturas, idUsuario)
 
 	// Convertir a JSON y responder
-	reservasJSON, err := json.Marshal(reservasFiltradas)
+	facturasJSON, err := json.Marshal(facturasFiltradas)
 	if err != nil {
 		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(reservasJSON)
+	w.Write(facturasJSON)
 }
 
-func filterFacturasByUsuarios(reservas []models.Factura, idUsuario string) []models.Factura {
-	var reservasFiltradas []models.Factura
+func filterFacturasByUsuarios(facturas []models.Factura, idUsuario string) []models.Factura {
+	var facturasFiltradas []models.Factura
 
-	// Filtrar las reservas por el ID de usuario
-	for _, reserva := range reservas {
-		if reserva.IDUsuario == idUsuario {
-			reservasFiltradas = append(reservasFiltradas, reserva)
+	// Filtrar las facturas por el ID de usuario
+	for _, factura := range facturas {
+		if factura.IDUsuario == idUsuario {
+			facturasFiltradas = append(facturasFiltradas, factura)
 		}
 	}
 
-	return reservasFiltradas
+	return facturasFiltradas
 }

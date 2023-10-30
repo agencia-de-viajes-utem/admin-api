@@ -17,9 +17,6 @@ func ConfigureRoutes(r *mux.Router) {
 
 	// Rutas para los Schemas
 	r.Handle("/api/admin/aeropuertos", http.HandlerFunc(handlers.GetAllAeropuertos))
-	r.Handle("/api/admin/ciudades", http.HandlerFunc(handlers.GetAllCiudades))
-
-	r.Handle("/api/admin/paquetes", http.HandlerFunc(handlers.GetAllPaquetes))
 
 	// Ruta para las imágenes
 	r.Handle("/api/admin/imagenes/listar", http.HandlerFunc(handlers.ListarTodasLasImagenes))
@@ -40,4 +37,18 @@ func ConfigureRoutes(r *mux.Router) {
 	// Paises
 	r.Handle("/api/admin/paises", http.HandlerFunc(handlers.GetAllPaises))
 	r.Handle("/api/admin/paises/crear", http.HandlerFunc(handlers.CreatePais))
+	r.Handle("/api/admin/paises/actualizar", http.HandlerFunc(handlers.UpdatePais))
+
+	//Paquetes
+	r.Handle("/api/admin/paquetes", http.HandlerFunc(handlers.GetAllPaquetes))
+	r.Handle("/api/admin/paquetes/crear", http.HandlerFunc(handlers.CreatePaquete))
+	r.Handle("/api/admin/paquetes/eliminar", http.HandlerFunc(handlers.DeletePaquete))
+	r.Handle("/api/admin/paquetes/actualizar", http.HandlerFunc(handlers.UpdatePaquete))
+
+	//Ciudades
+	r.Handle("/api/admin/ciudades", http.HandlerFunc(handlers.GetAllCiudades))
+	r.Handle("/api/admin/ciudades/crear", http.HandlerFunc(handlers.CreateCiudad))
+	r.Handle("/api/admin/ciudades/eliminar", http.HandlerFunc(handlers.DeleteCiudad))
+	r.Handle("/api/admin/ciudades/actualizar", http.HandlerFunc(handlers.UpdateCiudad))
+
 }

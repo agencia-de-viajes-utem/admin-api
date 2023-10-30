@@ -95,6 +95,7 @@ INNER JOIN opcionhotel ON habitacionhotel.opcion_hotel_id = opcionhotel.id
 INNER JOIN hotel ON habitacionhotel.hotel_id = hotel.id
 INNER JOIN ciudad AS ciudad_hotel ON hotel.ciudad_id = ciudad_hotel.id
 GROUP BY
+	hotel.id,
     paquete.id_hh,
     id_factura,
     id_paquete,
@@ -123,8 +124,7 @@ GROUP BY
     hotel.telefono,
     hotel.correo_electronico,
     hotel.sitio_web,
-    hotel.imagenes,
-    hotel.id,
+    hotel.imagenes;
 	`)
 	if err != nil {
 		return nil, err
