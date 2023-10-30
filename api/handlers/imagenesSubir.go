@@ -29,7 +29,7 @@ func PostImagen(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	// Especifica la ruta a tu archivo JSON de credenciales
-	pathToCredentials := "./credentials.json"
+	pathToCredentials := "credentials.json"
 
 	// Configura el cliente de Google Cloud Storage con tus credenciales
 	client, err := storage.NewClient(ctx, option.WithCredentialsFile(pathToCredentials))

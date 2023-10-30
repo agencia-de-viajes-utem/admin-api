@@ -41,7 +41,7 @@ func fetchInfoImagenes() ([]map[string]string, error) {
 	}
 
 	// Especificar la ruta al archivo JSON de credenciales
-	pathToCredentials := "./credentials.json"
+	pathToCredentials := "credentials.json"
 
 	// Configurar el cliente de Google Cloud Storage con las credenciales
 	ctx := context.Background()
