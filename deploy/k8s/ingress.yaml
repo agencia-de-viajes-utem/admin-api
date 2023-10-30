@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-prueba
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: prueba.lumonidy.studio
+    http:
+      paths:
+      - backend:
+          service:
+            name: golang-service
+            port:
+              number: 80
+        pathType: Prefix
+        path: /

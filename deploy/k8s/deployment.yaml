@@ -1,0 +1,20 @@
+# golang-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: golang-service
+  template:
+    metadata:
+      labels:
+        app: golang-service
+    spec:
+      containers:
+      - name: golang-service
+        image: gcr.io/annular-form-401215/gcr-alpine:{GITHUB_SHA}
+        ports:
+        - containerPort: 8888
