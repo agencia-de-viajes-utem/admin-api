@@ -54,21 +54,23 @@ jobs:
       run: |-
         docker build . --file Dockerfile -t "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA"
 
-    - name: Push docker image to GCR
-      run: |-
-        docker push "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA"
-
+        - name: Push docker image to GCR
+        run: |-
+          docker push "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA"
+          
     - name: Describe pushed GCR image
       run: |-
-        gcloud container images describe "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ env.PROJECT_ID }} --quiet
-        grep "digest: sha256:" <<< $(gcloud container images describe "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ env.PROJECT_ID }} --quiet)
+        gcloud container images describe "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ secrets.GCP_PROJECT }} --quiet
+        grep "digest: sha256:" <<< $(gcloud container images describe "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ secrets.GCP_PROJECT }} --quiet)
 
     - name: deploy to gke
       env:
         GOOGLE_PROJECT: ${{ secrets.GCP_PROJECT }}
       run: |
+        gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} --region ${{ secrets.GKE_ZONE }}
         sed -i "s/GOOGLE_PROJECT/$GCP_PROJECT/g" deploy/k8s/ingress.yaml
         kubectl apply -f deploy/k8s/ingress.yaml
+
 
     - name: Debug kubectl configurations
       run: kubectl config view
@@ -83,4 +85,4 @@ jobs:
     - name: Start Service
       run: |-
         cd deploy/k8s
-        kubectl apply -f service.yaml  # Aplicar la configuración del servicio
+        kubectl apply -f service.yaml  # Aplicar la configuración del servicio        
