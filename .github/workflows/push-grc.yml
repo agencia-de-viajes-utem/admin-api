@@ -28,6 +28,10 @@ jobs:
         echo "${{ secrets.GCP_SA_KEY }}" > credentials.json
       working-directory: ${{ github.workspace }}
 
+    - name: Debug credentials.json
+      run: cat credentials.json
+      working-directory: ${{ github.workspace }}
+    
     - name: Create .env file
       run: |
         echo "${{ secrets.ENV_GO_BACK }}" > .env
