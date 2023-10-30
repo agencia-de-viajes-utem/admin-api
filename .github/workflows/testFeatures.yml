@@ -1,0 +1,31 @@
+name: Test Features
+
+on:
+  push:
+    branches: [ "features" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "features" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      # Pruebas para Frontend de Agendamiento
+      - name: Frontend Tests (Agendamiento)
+        run: |
+          cd vista-agendamiento/front
+          # Comandos para ejecutar pruebas unitarias en el frontend (React)
+          # Asegúrate de configurar las pruebas para los componentes JSX
+          npm install   # Instala las dependencias del proyecto (si es necesario)
+          npm test      # Ejecuta las pruebas unitarias
+      
