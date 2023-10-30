@@ -7,6 +7,8 @@ on:
     branches: [ "main" ]
 
 env:
+  GCP_VERBOSITY: warning
+  GCR_IMAGE: gcr-alpine
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}    # Add your cluster name here.
   GKE_ZONE: ${{ secrets.GKE_ZONE }}   # Add your cluster zone here.
