@@ -18,7 +18,7 @@ func ListarTodasLasImagenes(w http.ResponseWriter, r *http.Request) {
 	// Obtener imágenes del bucket
 	imagenesBucket, err := fetchInfoImagenes()
 	if err != nil {
-		handleError(w, "Error al obtener las imágenes del bucket", http.StatusInternalServerError, err)
+		handleError(w, "Error tratando de obtener las imágenes desde el bucket", http.StatusInternalServerError, err)
 		return
 	}
 
