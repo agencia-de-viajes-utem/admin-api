@@ -16,4 +16,4 @@ spec:
             port:
               number: 80
         pathType: Prefix
-        path: /
+        path: /api/admin
