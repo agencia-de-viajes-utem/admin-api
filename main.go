@@ -27,7 +27,7 @@ func main() {
 	log.Println("Connected to the database!")
 
 	// Configurar el servidor web para escuchar en el puerto 9090
-	port := ":9090"
+	port := ":8888"
 	log.Printf("Server is ready! Listening on %s", port)
 	log.Fatal(http.ListenAndServe(port, r))
 }
