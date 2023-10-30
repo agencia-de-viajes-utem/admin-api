@@ -17,7 +17,7 @@ func GetFacturasByUsuarios(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Obtener todas las reservas
-	reservas, err := fetchReservas()
+	reservas, err := fetchFacturas()
 	if err != nil {
 		handleError(w, "Error al obtener las reservas", http.StatusInternalServerError, err)
 		return
