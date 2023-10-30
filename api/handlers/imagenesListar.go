@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -42,6 +43,15 @@ func fetchInfoImagenes() ([]map[string]string, error) {
 
 	// Especificar la ruta al archivo JSON de credenciales
 	pathToCredentials := "./credentials.json"
+
+	// Imprimir el contenido del archivo credentials.json
+	credentialsContent, err := ioutil.ReadFile(pathToCredentials)
+	if err != nil {
+		fmt.Println("Error al leer el contenido del archivo credentials.json:", err)
+		return nil, err
+	}
+	fmt.Println("Contenido del archivo credentials.json:")
+	fmt.Println(string(credentialsContent))
 
 	// Configurar el cliente de Google Cloud Storage con las credenciales
 	ctx := context.Background()
