@@ -8,7 +8,7 @@ import (
 )
 
 func GetAllFacturas(w http.ResponseWriter, r *http.Request) {
-	reservas, err := fetchReservas()
+	reservas, err := fetchFacturas()
 	if err != nil {
 		handleError(w, "Error al obtener las facturas", http.StatusInternalServerError, err)
 		return
@@ -24,7 +24,7 @@ func GetAllFacturas(w http.ResponseWriter, r *http.Request) {
 	w.Write(facturasJSON)
 }
 
-func fetchReservas() ([]models.Factura, error) {
+func fetchFacturas() ([]models.Factura, error) {
 	db, err := utils.OpenDB()
 	if err != nil {
 		return nil, err
