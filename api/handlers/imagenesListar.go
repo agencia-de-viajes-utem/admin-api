@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"cloud.google.com/go/storage"
@@ -14,7 +15,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-// ListarImagenes obtiene la lista de imágenes en el bucket con el prefijo especificado y las devuelve como JSON.
+// ImagenesBucket obtiene la lista de imágenes en el bucket con el prefijo especificado y las devuelve como JSON.
 func ImagenesBucket(w http.ResponseWriter, r *http.Request) {
 	infoImagenes, err := fetchInfoImagenes()
 	if err != nil {
@@ -40,19 +41,21 @@ func fetchInfoImagenes() ([]map[string]string, error) {
 		return nil, err
 	}
 
-	// Especificar la ruta al archivo JSON de credenciales
-	pathToCredentials := "./credentials.json"
-
-	// Imprimir el contenido del archivo credentials.json
-	credentialsContent, err := os.ReadFile(pathToCredentials)
+	// Buscar el archivo de credenciales en el directorio actual
+	matchingPattern := "./gha-creds-*.json"
+	matches, err := filepath.Glob(matchingPattern)
 	if err != nil {
-		fmt.Println("Error al leer el contenido del archivo credentials.json:", err)
+		fmt.Println("Error al buscar el archivo de credenciales:", err)
 		return nil, err
 	}
 
-	cleanedContent := strings.TrimSpace(string(credentialsContent))
-	fmt.Println("Contenido del archivo credentials.json:")
-	fmt.Println(cleanedContent)
+	if len(matches) == 0 {
+		fmt.Println("No se encontraron archivos de credenciales.")
+		return nil, fmt.Errorf("no se encontraron archivos de credenciales")
+	}
+
+	// Utilizar el primer archivo coincidente (puedes ajustar esto según tus necesidades)
+	pathToCredentials := matches[0]
 
 	// Configurar el cliente de Google Cloud Storage con las credenciales
 	ctx := context.Background()
