@@ -50,9 +50,9 @@ jobs:
       run: |-
         gcloud --quiet auth configure-docker
 
-    - name: Build the alpine-based docker image
+    -- name: Build the alpine-based docker image
       run: |-
-        docker build . --file Dockerfile -t "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA"
+        docker build . --file Dockerfile -t "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA"
 
     - name: Push docker image to GCR
       run: |-
