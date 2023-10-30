@@ -7,8 +7,11 @@ on:
     branches: [ "main" ]
 
 env:
-  GCP_VERBOSITY: warning
-  GCR_IMAGE: gcr-alpine
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}    # Add your cluster name here.
+  GKE_ZONE: us-east4   # Add your cluster zone here.
+  #IMAGE_TAG: ${{ github.sha }}
+  IMAGE_TAG: ${{ github.ref_name }}
 
 jobs:
   push-to-GCR:
@@ -33,7 +36,7 @@ jobs:
         echo "${{ secrets.ENV_GO_BACK }}" > .env
       working-directory: ${{ github.workspace }}
 
-    # Reemplaza la instalación manual de la CLI de Google Cloud
+    # Get the GKE credentials so we can deploy to the cluster
     - name: Get GKE credentials
       uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
       with:
@@ -47,16 +50,16 @@ jobs:
 
     - name: Build the alpine-based docker image
       run: |-
-        docker build . --file Dockerfile -t "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA"
+        docker build . --file Dockerfile -t "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA"
 
     - name: Push docker image to GCR
       run: |-
-        docker push "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA"
+        docker push "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA"
 
     - name: Describe pushed GCR image
       run: |-
-        gcloud container images describe "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ secrets.GCP_PROJECT }} --quiet
-        grep "digest: sha256:" <<< $(gcloud container images describe "gcr.io/${{ secrets.GCP_PROJECT }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ secrets.GCP_PROJECT }} --quiet)
+        gcloud container images describe "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ env.PROJECT_ID }} --quiet
+        grep "digest: sha256:" <<< $(gcloud container images describe "gcr.io/${{ env.PROJECT_ID }}/$GCR_IMAGE:$GITHUB_SHA" --verbosity=$GCP_VERBOSITY --project=${{ env.PROJECT_ID }} --quiet)
 
     - name: deploy to gke
       env:
