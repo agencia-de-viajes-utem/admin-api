@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"cloud.google.com/go/storage"
 	"github.com/joho/godotenv"
@@ -28,10 +29,25 @@ func PostImagen(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
 
-	// Especifica la ruta a tu archivo JSON de credenciales
-	pathToCredentials := "./credentials.json"
+	// Buscar el archivo de credenciales en el directorio actual
+	matchingPattern := "./gha-creds-*.json"
+	matches, err := filepath.Glob(matchingPattern)
+	if err != nil {
+		fmt.Printf("Error al buscar el archivo de credenciales: %v\n", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
 
-	// Configura el cliente de Google Cloud Storage con tus credenciales
+	if len(matches) == 0 {
+		fmt.Println("No se encontraron archivos de credenciales.")
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	// Utilizar el primer archivo coincidente (puedes ajustar esto según tus necesidades)
+	pathToCredentials := matches[0]
+
+	// Configurar el cliente de Google Cloud Storage con las credenciales
 	client, err := storage.NewClient(ctx, option.WithCredentialsFile(pathToCredentials))
 	if err != nil {
 		fmt.Printf("Failed to create client: %v\n", err)
