@@ -1,6 +1,8 @@
 name: Push image to Cloud Registry
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
