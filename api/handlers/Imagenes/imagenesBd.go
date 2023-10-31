@@ -4,19 +4,22 @@ import (
 	"admin/api/models"
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
 func ImagenesBd(w http.ResponseWriter, r *http.Request) {
 	imagenes, err := FetchBdInfoImagenes()
 	if err != nil {
-		handleError(w, "Error al obtener las imágenes", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener las imágenes: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	imagenesJSON, err := json.Marshal(imagenes)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

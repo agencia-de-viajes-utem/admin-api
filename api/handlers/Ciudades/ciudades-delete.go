@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -12,23 +13,20 @@ type CiudadDeleteRequest struct {
 }
 
 func DeleteCiudad(w http.ResponseWriter, r *http.Request) {
-	// Obtener los datos para eliminar la ciudad desde el cuerpo de la solicitud
 	var deleteRequest CiudadDeleteRequest
 
-	err := json.NewDecoder(r.Body).Decode(&deleteRequest)
-	if err != nil {
-		handleError(w, "Error al decodificar los datos de eliminación", http.StatusBadRequest, err)
+	if err := json.NewDecoder(r.Body).Decode(&deleteRequest); err != nil {
+		log.Printf("[%d] Error al decodificar los datos de eliminación: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Realizar la eliminación en la base de datos
-	err = deleteCiudad(deleteRequest.ID)
-	if err != nil {
-		handleError(w, "Error al eliminar la ciudad", http.StatusInternalServerError, err)
+	if err := deleteCiudad(deleteRequest.ID); err != nil {
+		log.Printf("[%d] Error al eliminar la ciudad: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Responder con éxito y proporcionar una respuesta JSON
 	response := map[string]interface{}{
 		"status":  "success",
 		"message": "Ciudad eliminada con éxito",

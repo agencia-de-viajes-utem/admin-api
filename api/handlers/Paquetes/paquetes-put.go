@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -28,14 +29,16 @@ func UpdatePaquete(w http.ResponseWriter, r *http.Request) {
 	var request PaqueteUpdateRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		handleError(w, "Error al decodificar los datos de actualización", http.StatusBadRequest, err)
+		log.Printf("[%d] Error al decodificar los datos de actualización: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Llamar a la función que maneja la actualización del paquete
 	err = updatePaquete(request)
 	if err != nil {
-		handleError(w, "Error al actualizar el paquete", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al actualizar el paquete: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

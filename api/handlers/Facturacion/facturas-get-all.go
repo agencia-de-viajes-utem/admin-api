@@ -4,19 +4,22 @@ import (
 	"admin/api/models"
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
 func GetAllFacturas(w http.ResponseWriter, r *http.Request) {
-	reservas, err := fetchFacturas()
+	facturas, err := fetchFacturas()
 	if err != nil {
-		handleError(w, "Error al obtener las facturas", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener las facturas: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	facturasJSON, err := json.Marshal(reservas)
+	facturasJSON, err := json.Marshal(facturas)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

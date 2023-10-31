@@ -4,6 +4,7 @@ import (
 	"admin/api/models"
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -11,13 +12,15 @@ import (
 func GetAllPaises(w http.ResponseWriter, r *http.Request) {
 	paises, err := fetchPaises()
 	if err != nil {
-		handleError(w, "Error al obtener los países", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener los países: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	paisesJSON, err := json.Marshal(paises)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

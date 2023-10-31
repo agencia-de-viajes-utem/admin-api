@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -22,14 +23,16 @@ func UpdatePais(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&paisUpdate)
 	if err != nil {
-		handleError(w, "Error al decodificar los datos de actualización", http.StatusBadRequest, err)
+		log.Printf("[%d] Error al decodificar los datos de actualización: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Actualizar el país en la base de datos según los campos proporcionados
 	err = updatePais(paisUpdate)
 	if err != nil {
-		handleError(w, "Error al actualizar el país", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al actualizar el país: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

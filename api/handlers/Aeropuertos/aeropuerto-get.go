@@ -4,6 +4,7 @@ import (
 	"admin/api/models"
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -11,13 +12,15 @@ import (
 func GetAllAeropuertos(w http.ResponseWriter, r *http.Request) {
 	aeropuertos, err := fetchAeropuertos()
 	if err != nil {
-		handleError(w, "Error al obtener los aeropuertos", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener los aeropuertos: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	aeropuertosJSON, err := json.Marshal(aeropuertos)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

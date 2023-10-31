@@ -4,6 +4,7 @@ import (
 	"admin/api/models"
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -11,13 +12,15 @@ import (
 func GetAllCiudades(w http.ResponseWriter, r *http.Request) {
 	ciudades, err := fetchCiudades()
 	if err != nil {
-		handleError(w, "Error al obtener las ciudades", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener las ciudades: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	ciudadesJSON, err := json.Marshal(ciudades)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

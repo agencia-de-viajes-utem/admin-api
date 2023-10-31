@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -19,13 +20,15 @@ import (
 func ImagenesBucket(w http.ResponseWriter, r *http.Request) {
 	infoImagenes, err := fetchInfoImagenes()
 	if err != nil {
-		handleError(w, "Error al obtener la lista de imágenes", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener la lista de imágenes: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	infoImagenesJSON, err := json.Marshal(infoImagenes)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

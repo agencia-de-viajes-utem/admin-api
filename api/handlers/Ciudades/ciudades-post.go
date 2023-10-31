@@ -4,6 +4,7 @@ import (
 	"admin/api/utils"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/lib/pq" // Importa la librería pq para trabajar con arrays PostgreSQL
@@ -18,23 +19,20 @@ type CiudadCreate struct {
 }
 
 func CreateCiudad(w http.ResponseWriter, r *http.Request) {
-	// Obtener los datos para la creación de la ciudad desde el cuerpo de la solicitud
 	var ciudadCreate CiudadCreate
 
-	err := json.NewDecoder(r.Body).Decode(&ciudadCreate)
-	if err != nil {
-		handleError(w, "Error al decodificar los datos de creación", http.StatusBadRequest, err)
+	if err := json.NewDecoder(r.Body).Decode(&ciudadCreate); err != nil {
+		log.Printf("[%d] Error al decodificar los datos de creación: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Crear la nueva ciudad en la base de datos
-	err = createCiudad(ciudadCreate)
-	if err != nil {
-		handleError(w, "Error al crear la ciudad", http.StatusInternalServerError, err)
+	if err := createCiudad(ciudadCreate); err != nil {
+		log.Printf("[%d] Error al crear la ciudad: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Responder con éxito y proporcionar una respuesta JSON
 	response := map[string]interface{}{
 		"status":  "success",
 		"message": "Ciudad creada con éxito",

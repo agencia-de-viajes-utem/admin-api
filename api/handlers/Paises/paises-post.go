@@ -4,6 +4,7 @@ import (
 	"admin/api/utils"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -21,14 +22,16 @@ func CreatePais(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&paisCreate)
 	if err != nil {
-		handleError(w, "Error al decodificar los datos de creación", http.StatusBadRequest, err)
+		log.Printf("[%d] Error al decodificar los datos de creación: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Crear el nuevo país en la base de datos
 	err = createPais(paisCreate.Nombre, paisCreate.Abreviacion, paisCreate.Imagenes)
 	if err != nil {
-		handleError(w, "Error al crear el país", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al crear el país: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/models"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -11,14 +12,16 @@ func ListarTodasLasImagenes(w http.ResponseWriter, r *http.Request) {
 	// Obtener imágenes de la base de datos
 	imagenesBd, err := FetchBdInfoImagenes()
 	if err != nil {
-		handleError(w, "Error al obtener las imágenes de la base de datos", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener las imágenes de la base de datos: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// Obtener imágenes del bucket
 	imagenesBucket, err := fetchInfoImagenes()
 	if err != nil {
-		handleError(w, "Error tratando de obtener las imágenes desde el bucket", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error tratando de obtener las imágenes desde el bucket: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -28,7 +31,8 @@ func ListarTodasLasImagenes(w http.ResponseWriter, r *http.Request) {
 	// Convertir a JSON y enviar como respuesta
 	imagenesJSON, err := json.Marshal(imagenesCombinadas)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

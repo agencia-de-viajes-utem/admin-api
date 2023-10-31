@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 )
@@ -21,14 +22,16 @@ func UpdateFactura(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&facturaUpdate)
 	if err != nil {
-		handleError(w, "Error al decodificar los datos de actualización", http.StatusBadRequest, err)
+		log.Printf("[%d] Error al decodificar los datos de actualización: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Actualizar la factura en la base de datos
 	err = updateFactura(facturaUpdate.IDFactura, facturaUpdate.MontoTotal, facturaUpdate.FechaCreacion, facturaUpdate.FkReserva)
 	if err != nil {
-		handleError(w, "Error al actualizar la factura", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al actualizar la factura: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

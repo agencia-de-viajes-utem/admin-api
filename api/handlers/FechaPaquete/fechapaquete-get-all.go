@@ -4,6 +4,7 @@ import (
 	"admin/api/models"
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -11,13 +12,15 @@ import (
 func GetAllFechaPaquetes(w http.ResponseWriter, r *http.Request) {
 	paquetes, err := fetchFechaPaquetes()
 	if err != nil {
-		handleError(w, "Error al obtener los paquetes", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener los paquetes: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	paquetesJSON, err := json.Marshal(paquetes)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

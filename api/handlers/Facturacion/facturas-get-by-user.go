@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/models"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -12,14 +13,16 @@ func GetFacturasByUsuarios(w http.ResponseWriter, r *http.Request) {
 
 	// Validar que se proporcionó un ID de usuario
 	if idUsuario == "" {
-		handleError(w, "Se requiere el parámetro 'id_usuario'", http.StatusBadRequest, nil)
+		log.Printf("[%d] Se requiere el parámetro 'id_usuario'", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Obtener todas las facturas
 	facturas, err := fetchFacturas()
 	if err != nil {
-		handleError(w, "Error al obtener las facturas", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener las facturas: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -29,7 +32,8 @@ func GetFacturasByUsuarios(w http.ResponseWriter, r *http.Request) {
 	// Convertir a JSON y responder
 	facturasJSON, err := json.Marshal(facturasFiltradas)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

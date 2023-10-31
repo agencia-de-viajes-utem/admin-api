@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <title>Estado de la Base de Datos</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="loader"></div>
+        <h1>Estado de la Base de Datos</h1>
+        <div class="status error" style="display: none;">Hubo problemas para conectarse a la base de datos</div>
+
+        <!-- Sección para mostrar las rutas -->
+        <div id="routes" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Realizar una solicitud AJAX para verificar el estado de la base de datos
+        var statusElement = document.querySelector('.status');
+        var loaderElement = document.querySelector('.loader');
+        var routesElement = document.getElementById('routes');
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/check-db', true);
+
+        xhr.onload = function () {
+            loaderElement.style.display = 'none'; // Ocultar el spinner al cargar
+            statusElement.style.display = 'block'; // Mostrar el mensaje de estado
+            if (xhr.status === 200) {
+                statusElement.innerHTML = 'Estás conectado a la base de datos';
+                statusElement.classList.add('success');
+
+                // Obtener y mostrar las rutas después de conectarse a la base de datos
+                var routesXhr = new XMLHttpRequest();
+                routesXhr.open('GET', '/get-routes', true);
+
+                routesXhr.onload = function () {
+                    if (routesXhr.status === 200) {
+                        var routes = JSON.parse(routesXhr.responseText);
+                        var routesList = '<ul>';
+                        routes.forEach(function (route) {
+                            routesList += '<li><a href="' + route + '">' + route + '</a></li>';
+                        });
+                        routesList += '</ul>';
+
+                        routesElement.innerHTML = 'Rutas [GET] Disponibles: ' + routesList;
+                        routesElement.style.display = 'block'; // Mostrar las rutas
+                    }
+                };
+
+                routesXhr.send();
+            } else {
+                statusElement.innerHTML = 'Hubo problemas para conectarse: ' + xhr.statusText;
+            }
+        };
+
+        xhr.onerror = function () {
+            loaderElement.style.display = 'none'; // Ocultar el spinner en caso de error
+            statusElement.style.display = 'block'; // Mostrar el mensaje de estado
+            statusElement.innerHTML = 'Hubo problemas para conectarse a la base de datos';
+        };
+
+        xhr.send();
+    </script>
+</body>
+
+</html>

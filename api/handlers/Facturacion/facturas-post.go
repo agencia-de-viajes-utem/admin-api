@@ -4,6 +4,7 @@ import (
 	"admin/api/utils"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -21,14 +22,16 @@ func CreateFactura(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&facturaCreate)
 	if err != nil {
-		handleError(w, "Error al decodificar los datos de creación", http.StatusBadRequest, err)
+		log.Printf("[%d] Error al decodificar los datos de creación: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Crear la nueva factura en la base de datos
 	err = createFactura(facturaCreate.MontoTotal, facturaCreate.FechaCreacion, facturaCreate.FkReserva)
 	if err != nil {
-		handleError(w, "Error al crear la factura", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al crear la factura: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

@@ -4,24 +4,23 @@ import (
 	"admin/api/models"
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
-
-// Hay que cambiar los nombres de las funciones para algo más representantivo a lo que sería buscar paquetes por fecha
-// le falta hacer el cruce con el id del AO y el id del AD y fechaInit y fechaFin y totalPersonas
-// podrían pedir los parámetros como form o en el query, se los dejo a ustedes, form pareciera más apropiado
 
 // GetAllPaquetes obtiene todos los paquetes y los devuelve como JSON.
 func GetAllPaquetes(w http.ResponseWriter, r *http.Request) {
 	paquetes, err := fetchPaquetes()
 	if err != nil {
-		handleError(w, "Error al obtener los paquetes", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al obtener los paquetes: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	paquetesJSON, err := json.Marshal(paquetes)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al convertir a JSON: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

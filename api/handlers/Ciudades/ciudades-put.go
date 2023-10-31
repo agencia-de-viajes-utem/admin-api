@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -19,23 +20,20 @@ type CiudadUpdate struct {
 
 // UpdateCiudad actualiza una ciudad en la base de datos según los campos proporcionados
 func UpdateCiudad(w http.ResponseWriter, r *http.Request) {
-	// Obtener los datos actualizados de la ciudad desde el cuerpo de la solicitud
 	var ciudadUpdate CiudadUpdate
 
-	err := json.NewDecoder(r.Body).Decode(&ciudadUpdate)
-	if err != nil {
-		handleError(w, "Error al decodificar los datos de actualización", http.StatusBadRequest, err)
+	if err := json.NewDecoder(r.Body).Decode(&ciudadUpdate); err != nil {
+		log.Printf("[%d] Error al decodificar los datos de actualización: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Actualizar la ciudad en la base de datos según los campos proporcionados
-	err = updateCiudad(ciudadUpdate)
-	if err != nil {
-		handleError(w, "Error al actualizar la ciudad", http.StatusInternalServerError, err)
+	if err := updateCiudad(ciudadUpdate); err != nil {
+		log.Printf("[%d] Error al actualizar la ciudad: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Responder con una respuesta JSON apropiada
 	response := map[string]interface{}{
 		"status":  "success",
 		"message": "Ciudad actualizada con éxito",

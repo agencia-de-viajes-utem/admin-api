@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/api/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -17,14 +18,16 @@ func DeletePaquete(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&deleteRequest)
 	if err != nil {
-		handleError(w, "Error al decodificar los datos de eliminación", http.StatusBadRequest, err)
+		log.Printf("[%d] Error al decodificar los datos de eliminación: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Realizar la eliminación en la base de datos
 	err = deletePaquete(deleteRequest.ID)
 	if err != nil {
-		handleError(w, "Error al eliminar el paquete", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al eliminar el paquete: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

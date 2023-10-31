@@ -4,6 +4,7 @@ import (
 	"admin/api/utils"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/lib/pq" // Importa la librería pq para trabajar con arrays PostgreSQL
@@ -27,14 +28,16 @@ func CreatePaquete(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&paqueteCreate)
 	if err != nil {
-		handleError(w, "Error al decodificar los datos de creación", http.StatusBadRequest, err)
+		log.Printf("[%d] Error al decodificar los datos de creación: %v", http.StatusBadRequest, err)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Crear el nuevo paquete en la base de datos
 	err = createPaquete(paqueteCreate)
 	if err != nil {
-		handleError(w, "Error al crear el paquete", http.StatusInternalServerError, err)
+		log.Printf("[%d] Error al crear el paquete: %v", http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
