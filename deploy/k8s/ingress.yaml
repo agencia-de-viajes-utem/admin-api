@@ -7,7 +7,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: prueba.lumonidy.studio
+  - host: admin.lumonidy.studio
     http:
       paths:
       - backend:
