@@ -7,36 +7,48 @@ import (
 	"net/http"
 )
 
-// fechaPaquete es una instancia que contiene informaciòn
+// JsonRequest estructura para el JSON esperado en la solicitud
+type JsonRequest struct {
+	Mes           int `json:"mes"`
+	TotalPersonas int `json:"total_personas"`
+	CiudadOrigen  int `json:"ciudad_origen"`
+	CiudadDestino int `json:"ciudad_destino"`
+}
+
+// GetFechaPaqueteByMes obtiene información de paquetes por mes
 func GetFechaPaqueteByMes(w http.ResponseWriter, r *http.Request) {
-	// Mediante un form value necesitamos obtener
-	// mes (entero), total_personas (entero), ciudad_origen (entero), ciudad_destino (entero)
-
-	// Obtener los valores del form
-	mes := r.FormValue("mes")
-	total_personas := r.FormValue("total_personas")
-	ciudad_origen := r.FormValue("ciudad_origen")
-	ciudad_destino := r.FormValue("ciudad_destino")
-
-	// Validar que se proporcionó un ID de usuario
-	if mes == "" {
-		handleError(w, "Se requiere el parámetro 'mes'", http.StatusBadRequest, nil)
-		return
-	}
-
-	// Hacer el fetchFechaPaqueteByUser y pasarle los valores del form
-
-	fechas, err := fetchFechaPaqueteByUser(mes, total_personas, ciudad_origen, ciudad_destino)
-
+	// Decodificar el cuerpo JSON de la solicitud
+	var requestData JsonRequest
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&requestData)
 	if err != nil {
-		handleError(w, "Error al obtener las fechas", http.StatusInternalServerError, err)
+		http.Error(w, "Error al decodificar JSON", http.StatusBadRequest)
 		return
 	}
 
-	// Convertir las fechaPaquete a JSON
+	// Utilizar los valores de la estructura JsonRequest
+	mes := requestData.Mes
+	totalPersonas := requestData.TotalPersonas
+	ciudadOrigen := requestData.CiudadOrigen
+	ciudadDestino := requestData.CiudadDestino
+
+	// Validar que se proporcionó un mes
+	if mes == 0 {
+		http.Error(w, "Se requiere el parámetro 'mes'", http.StatusBadRequest)
+		return
+	}
+
+	// Hacer el fetchFechaPaqueteByUser y pasarle los valores
+	fechas, err := fetchFechaPaqueteByUser(mes, totalPersonas, ciudadOrigen, ciudadDestino)
+	if err != nil {
+		http.Error(w, "Error al obtener las fechas de paquete", http.StatusInternalServerError)
+		return
+	}
+
+	// Convertir las fechas de paquete a JSON
 	fechasJSON, err := json.Marshal(fechas)
 	if err != nil {
-		handleError(w, "Error al convertir a JSON", http.StatusInternalServerError, err)
+		http.Error(w, "Error al convertir a JSON", http.StatusInternalServerError)
 		return
 	}
 
@@ -45,7 +57,7 @@ func GetFechaPaqueteByMes(w http.ResponseWriter, r *http.Request) {
 	w.Write(fechasJSON)
 }
 
-func fetchFechaPaqueteByUser(mes, total_personas, ciudad_origen, ciudad_destino string) ([]models.PaquetefechaInfo, error) {
+func fetchFechaPaqueteByUser(mes, total_personas, ciudad_origen, ciudad_destino int) ([]models.PaquetefechaInfo, error) {
 	db, err := utils.OpenDB()
 	if err != nil {
 		return nil, err
