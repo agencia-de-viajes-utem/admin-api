@@ -9,6 +9,7 @@ import (
 	imagenes "admin/api/handlers/Imagenes"
 	paises "admin/api/handlers/Paises"
 	paquetes "admin/api/handlers/Paquetes"
+	usuarios "admin/api/handlers/Usuarios"
 
 	"net/http"
 
@@ -61,4 +62,7 @@ func ConfigureRoutes(r *mux.Router) {
 	//FechaPaquetes
 	r.Handle("/fechapaquetes", http.HandlerFunc(fechapaquete.GetAllFechaPaquetes)).Methods("GET")
 	r.Handle("/fechapaquetes/mes", http.HandlerFunc(fechapaquete.GetFechaPaqueteByMes)).Methods("GET")
+
+	//Usuarios
+	r.Handle("/usuarios", http.HandlerFunc(usuarios.GetAllUsuarios)).Methods("GET")
 }

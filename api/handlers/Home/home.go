@@ -36,6 +36,7 @@ func GetRoutesHandler(w http.ResponseWriter, r *http.Request) {
 		"/paquetes",
 		"/ciudades",
 		"/fechapaquetes",
+		"/usuarios",
 	}
 
 	// Convertir la lista de rutas a formato JSON
