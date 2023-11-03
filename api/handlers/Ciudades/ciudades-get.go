@@ -53,9 +53,9 @@ func fetchCiudades() ([]models.Ciudad, error) {
 			&ciudad.ID,
 			&ciudad.Nombre,
 			&ciudad.PaisID,
+			&ciudad.Imagenes,
 			&ciudad.NombrePais,
 			&ciudad.AbrevPais,
-			&ciudad.Imagenes,
 		)
 		if err != nil {
 			return nil, err
