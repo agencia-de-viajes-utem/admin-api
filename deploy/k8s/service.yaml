@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: golang-service
+  name: admin-api
 spec:
   selector:
-    app: golang-service
+    app: admin-api
   ports:
     - protocol: TCP
       port: 80

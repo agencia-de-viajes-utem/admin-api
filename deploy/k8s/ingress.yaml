@@ -12,7 +12,7 @@ spec:
       paths:
       - backend:
           service:
-            name: golang-service
+            name: admin-api
             port:
               number: 80
         pathType: Prefix

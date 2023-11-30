@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: golang-service
+  name: admin-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: golang-service
+      app: admin-api
   template:
     metadata:
       labels:
-        app: golang-service
+        app: admin-api
     spec:
       containers:
-      - name: golang-service
+      - name: admin-api
         image: gcr.io/annular-form-401215/gcr-alpine:{GITHUB_SHA}
         ports:
         - containerPort: 8888
